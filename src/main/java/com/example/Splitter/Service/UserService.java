@@ -1,13 +1,13 @@
 package com.example.Splitter.Service;
 
+import com.example.Splitter.Model.AppGroup;
 import com.example.Splitter.Model.AppUser;
-import com.example.Splitter.Model.Group;
-import com.example.Splitter.Repo.GroupRepo;
 import com.example.Splitter.Repo.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -34,7 +34,13 @@ public class UserService {
 
     public String deleteUser(String id){
         try{
-            userRepo.deleteById(id);
+            AppUser user = userRepo.findById(id)
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+
+            for (AppGroup group : user.getGroups()) {
+                group.getUsers().remove(user);   // remove user from each group
+            }
+            userRepo.delete(user);
             return id;
         } catch (Exception e) {
             throw new RuntimeException(e);

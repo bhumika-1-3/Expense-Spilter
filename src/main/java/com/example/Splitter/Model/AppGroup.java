@@ -6,12 +6,17 @@ import java.util.List;
 
 @Data
 @Entity
-public class Group {
+public class AppGroup {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String groupId;
     private String groupName;
-    @OneToMany(cascade = CascadeType.ALL)
+    @ManyToMany
+    @JoinTable(
+            name = "group_users",
+            joinColumns = @JoinColumn(name = "group_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
     private List<AppUser> users;
 }

@@ -1,13 +1,13 @@
 package com.example.Splitter.Controller;
 
 
-import com.example.Splitter.Model.Group;
+import com.example.Splitter.Model.AppGroup;
+import com.example.Splitter.Model.GroupAndUserResponse;
 import com.example.Splitter.Service.GroupService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("group")
@@ -17,9 +17,27 @@ public class GroupController {
     private GroupService groupService;
 
     @PostMapping
-    public String createGroup(@RequestBody Group info){
+    public String createGroup(@RequestBody AppGroup info){
         try{
             return groupService.createGroup(info);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @GetMapping("id/{id}")
+    public GroupAndUserResponse getGroupdata(@PathVariable String id){
+        try{
+            return groupService.getGroupData(id);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @GetMapping
+    public List<GroupAndUserResponse> getAllGroups(){
+        try{
+            return groupService.getAllGroups();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
