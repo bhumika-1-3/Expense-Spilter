@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Map;
 
 @Data
 @Entity
@@ -17,4 +18,7 @@ public class AppUser {
     @ManyToMany(mappedBy = "users")
     @JsonIgnore
     private List<AppGroup> groups;
+//
+//    private List<Map<String,Double>> owedByYou;
+//    private List<Map<String,Double>> owedToYou;
 }

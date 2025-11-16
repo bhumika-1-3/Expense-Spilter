@@ -5,6 +5,7 @@ import com.example.Splitter.Model.AppUser;
 import com.example.Splitter.Repo.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,6 +33,7 @@ public class UserService {
         }
     }
 
+    @Transactional
     public String deleteUser(String id){
         try{
             AppUser user = userRepo.findById(id)

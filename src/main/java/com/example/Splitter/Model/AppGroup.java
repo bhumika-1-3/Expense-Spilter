@@ -19,4 +19,8 @@ public class AppGroup {
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
     private List<AppUser> users;
+
+    @OneToMany(mappedBy = "group", cascade = CascadeType.ALL)
+    private List<AppTransaction> transactions;
+
 }
