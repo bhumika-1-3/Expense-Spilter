@@ -44,21 +44,39 @@ public class TransactionService {
             AppTransaction transaction = new AppTransaction();
             transaction.setGroup(group);
             transaction.setSender(sender);
-            transaction.setAmount(req.getAmount());
-            transaction.setDesc(req.getDesc());
-
             List<TransactionSplit> splits = new ArrayList<>();
-            double splitAmount = req.getAmount() / receivers.size(); // equal split for now
 
-            for (AppUser receiver : receivers) {
-                TransactionSplit split = new TransactionSplit();
-                split.setTransaction(transaction);
-                split.setOwedByUser(receiver);
-                split.setOwedToUser(sender);
-                split.setAmount(splitAmount);
-                splits.add(split);
+            double totalAmount = 0.0;
+            if(req.getSplitType() == SplitType.EQUAL){
+                double splitAmount = req.getAmount() / receivers.size(); // equal split for now
+                for (AppUser receiver : receivers) {
+                    TransactionSplit split = new TransactionSplit();
+                    split.setTransaction(transaction);
+                    split.setOwedByUser(receiver);
+                    split.setOwedToUser(sender);
+                    split.setAmount(splitAmount);
+                    splits.add(split);
+                    totalAmount+=splitAmount;
+                }
+            }
+            else if(req.getSplitType() == SplitType.UNEQUAL){
+                List<Double> splitAmount = req.getAmounts();
+                int i = 0;
+                for (AppUser receiver : receivers) {
+                    TransactionSplit split = new TransactionSplit();
+                    double amountForReceiver = splitAmount.get(i);
+                    split.setTransaction(transaction);
+                    split.setOwedByUser(receiver);
+                    split.setOwedToUser(sender);
+                    split.setAmount(amountForReceiver);
+                    splits.add(split);
+                    totalAmount+=amountForReceiver;
+                    i++;
+                }
             }
 
+            transaction.setDesc(req.getDesc());
+            transaction.setAmount(totalAmount);
             transaction.setSplits(splits);
             transactionRepo.save(transaction);
 
