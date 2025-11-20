@@ -1,13 +1,13 @@
 package com.example.Splitter.Controller;
 
-import com.example.Splitter.Model.AppTransaction;
+import com.example.Splitter.Entity.AppTransaction;
+import com.example.Splitter.Model.AllTransactionInGroup;
 import com.example.Splitter.Model.TransactionRequest;
 import com.example.Splitter.Service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("transaction")
@@ -20,6 +20,15 @@ public class TransactionController {
     public String addTransaction(@RequestBody TransactionRequest req){
         try{
             return transactionService.addTransaction(req);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @GetMapping("group/{groupId}")
+    public List<AllTransactionInGroup> allTransactionInTheGroup(@PathVariable String groupId){
+        try{
+            return transactionService.allTransactionInTheGroup(groupId);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

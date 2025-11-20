@@ -1,5 +1,6 @@
-package com.example.Splitter.Model;
+package com.example.Splitter.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -13,6 +14,7 @@ public class TransactionSplit {
 
     @ManyToOne
     @JoinColumn(name = "transaction_id")
+    @JsonIgnore
     private AppTransaction transaction;
 
     @ManyToOne

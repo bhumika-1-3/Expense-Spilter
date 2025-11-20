@@ -1,7 +1,8 @@
 package com.example.Splitter.Controller;
 
 
-import com.example.Splitter.Model.AppUser;
+import com.example.Splitter.Entity.AppUser;
+import com.example.Splitter.Model.CreateUserRequest;
 import com.example.Splitter.Service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,7 @@ public class UserController {
     private UserService userService;
 
     @PostMapping
-    public String createUser(@RequestBody AppUser info){
+    public String createUser(@RequestBody CreateUserRequest info){
         try{
             log.info("user controller post {}",info);
             return userService.createUser(info);

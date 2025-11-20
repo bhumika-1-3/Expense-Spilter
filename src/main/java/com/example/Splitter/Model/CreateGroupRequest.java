@@ -6,7 +6,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class GroupAndUserResponse {
+public class CreateGroupRequest {
     private String groupName;
     private List<AppUser> users;
 }

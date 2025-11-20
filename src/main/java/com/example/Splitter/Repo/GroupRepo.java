@@ -1,6 +1,6 @@
 package com.example.Splitter.Repo;
 
-import com.example.Splitter.Model.AppGroup;
+import com.example.Splitter.Entity.AppGroup;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 

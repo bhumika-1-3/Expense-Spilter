@@ -1,5 +1,6 @@
-package com.example.Splitter.Model;
+package com.example.Splitter.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -15,6 +16,7 @@ public class AppTransaction {
 
     @ManyToOne
     @JoinColumn(name = "group_id")
+    @JsonIgnore
     private AppGroup group;
     private Double amount;
     @ManyToOne

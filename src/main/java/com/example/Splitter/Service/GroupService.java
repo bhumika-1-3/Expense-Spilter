@@ -1,7 +1,8 @@
 package com.example.Splitter.Service;
 
-import com.example.Splitter.Model.AppGroup;
-import com.example.Splitter.Model.AppUser;
+import com.example.Splitter.Entity.AppGroup;
+import com.example.Splitter.Entity.AppUser;
+import com.example.Splitter.Model.CreateGroupRequest;
 import com.example.Splitter.Model.GroupAndUserResponse;
 import com.example.Splitter.Repo.GroupRepo;
 import com.example.Splitter.Repo.UserRepo;
@@ -23,7 +24,7 @@ public class GroupService {
     @Autowired
     private UserRepo userRepo;
 
-    public String createGroup(AppGroup info){
+    public String createGroup(CreateGroupRequest info){
         try{
             List<AppUser> usersInGroup = info.getUsers();
             for(AppUser user : usersInGroup){
@@ -33,8 +34,12 @@ public class GroupService {
                     throw new RuntimeException();
                 }
             }
-            groupRepo.save(info);
-            return info.getGroupId();
+
+            AppGroup appGroup = new AppGroup();
+            appGroup.setGroupName(info.getGroupName());
+            appGroup.setUsers(info.getUsers());
+            groupRepo.save(appGroup);
+            return appGroup.getGroupId();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

@@ -1,11 +1,10 @@
-package com.example.Splitter.Model;
+package com.example.Splitter.Entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
 import java.util.List;
-import java.util.Map;
 
 @Data
 @Entity

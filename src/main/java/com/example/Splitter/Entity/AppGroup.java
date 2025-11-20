@@ -1,11 +1,12 @@
-package com.example.Splitter.Model;
+package com.example.Splitter.Entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+
 import java.util.List;
 
-@Data
 @Entity
+@Data
 public class AppGroup {
 
     @Id

@@ -1,11 +1,17 @@
 package com.example.Splitter.Service;
 
+import com.example.Splitter.Entity.AppGroup;
+import com.example.Splitter.Entity.AppTransaction;
+import com.example.Splitter.Entity.AppUser;
+import com.example.Splitter.Entity.TransactionSplit;
+import com.example.Splitter.Enum.SplitType;
 import com.example.Splitter.Model.*;
 import com.example.Splitter.Repo.GroupRepo;
 import com.example.Splitter.Repo.TransactionRepo;
 import com.example.Splitter.Repo.UserRepo;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -61,6 +67,7 @@ public class TransactionService {
             }
             else if(req.getSplitType() == SplitType.UNEQUAL){
                 List<Double> splitAmount = req.getAmounts();
+                if(splitAmount.size() != req.getReceiverIds().size()) throw new RuntimeException("Unequal amount and Receiver ids");
                 int i = 0;
                 for (AppUser receiver : receivers) {
                     TransactionSplit split = new TransactionSplit();
@@ -84,6 +91,41 @@ public class TransactionService {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public List<AllTransactionInGroup> allTransactionInTheGroup(String id){
+        try{
+            AppGroup group = groupRepo.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Group not found"));
+
+
+            List<AppTransaction> appTransactions = group.getTransactions();
+
+            List<AllTransactionInGroup> allTransactionInGroups = new ArrayList<>();
+            for(AppTransaction transaction : appTransactions){
+                AllTransactionInGroup allTransactionInGroup = getAllTransactionInGroup(transaction, group);
+                allTransactionInGroups.add(allTransactionInGroup);
+            }
+            return allTransactionInGroups;
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @NotNull
+    private static AllTransactionInGroup getAllTransactionInGroup(AppTransaction transaction, AppGroup group) {
+        AllTransactionInGroup allTransactionInGroup = new AllTransactionInGroup();
+        List <String> receiverNames = new ArrayList<>();
+        allTransactionInGroup.setAmount(transaction.getAmount());
+        allTransactionInGroup.setSenderName(transaction.getSender().getName());
+        allTransactionInGroup.setDesc(transaction.getDesc());
+        for(TransactionSplit split : transaction.getSplits()){
+            receiverNames.add(split.getOwedByUser().getName());
+        }
+
+        allTransactionInGroup.setReceiverNames(receiverNames);
+        return allTransactionInGroup;
     }
 
 }

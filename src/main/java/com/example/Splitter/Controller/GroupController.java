@@ -1,7 +1,8 @@
 package com.example.Splitter.Controller;
 
 
-import com.example.Splitter.Model.AppGroup;
+import com.example.Splitter.Entity.AppGroup;
+import com.example.Splitter.Model.CreateGroupRequest;
 import com.example.Splitter.Model.GroupAndUserResponse;
 import com.example.Splitter.Service.GroupService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,7 @@ public class GroupController {
     private GroupService groupService;
 
     @PostMapping
-    public String createGroup(@RequestBody AppGroup info){
+    public String createGroup(@RequestBody CreateGroupRequest info){
         try{
             return groupService.createGroup(info);
         } catch (Exception e) {

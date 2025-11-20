@@ -1,5 +1,6 @@
 package com.example.Splitter.Model;
 
+import com.example.Splitter.Enum.SplitType;
 import lombok.Data;
 
 import java.util.List;
