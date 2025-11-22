@@ -8,5 +8,5 @@ import java.util.List;
 @Data
 public class CreateGroupRequest {
     private String groupName;
-    private List<AppUser> users;
+    private List<String> users;
 }

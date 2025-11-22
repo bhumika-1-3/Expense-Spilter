@@ -2,7 +2,9 @@ package com.example.Splitter.Service;
 
 import com.example.Splitter.Entity.AppGroup;
 import com.example.Splitter.Entity.AppUser;
+import com.example.Splitter.Enum.EditingType;
 import com.example.Splitter.Model.CreateGroupRequest;
+import com.example.Splitter.Model.EditUsersInGroup;
 import com.example.Splitter.Model.GroupAndUserResponse;
 import com.example.Splitter.Repo.GroupRepo;
 import com.example.Splitter.Repo.UserRepo;
@@ -26,24 +28,53 @@ public class GroupService {
 
     public String createGroup(CreateGroupRequest info){
         try{
-            List<AppUser> usersInGroup = info.getUsers();
-            for(AppUser user : usersInGroup){
+            List<String> usersInGroup = info.getUsers();
+            List<AppUser> users = new ArrayList<>();
+            for(String id : usersInGroup){
 //                todo : create new user
-                if (!userRepo.existsById(user.getUserId())){
-                    log.info("User doesnot exist");
-                    throw new RuntimeException();
-                }
+                AppUser user = userRepo.findById(id)
+                        .orElseThrow(() -> new RuntimeException("User not found"));
+
+                users.add(user);
             }
 
             AppGroup appGroup = new AppGroup();
             appGroup.setGroupName(info.getGroupName());
-            appGroup.setUsers(info.getUsers());
+            appGroup.setUsers(users);
             groupRepo.save(appGroup);
             return appGroup.getGroupId();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
+
+    public String editUsers(String id, List<String> userIds, EditingType type) {
+        try {
+            AppGroup group = groupRepo.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Group not found"));
+
+            List<AppUser> currentUsers = group.getUsers();
+
+            List<AppUser> users = userRepo.findAllById(userIds);
+            if (users.size() != userIds.size()) {
+                throw new RuntimeException("Some users do not exist");
+            }
+
+            if (type == EditingType.ADD) {
+                currentUsers.addAll(users);
+            }
+            else if (type == EditingType.DELETE) {
+                currentUsers.removeAll(users);
+            }
+
+            groupRepo.save(group);
+            return "Users edited";
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
     public GroupAndUserResponse getGroupData(String id){
         try{
@@ -70,6 +101,18 @@ public class GroupService {
                 data.add(response);
             }
             return data;
+        }
+        catch (Exception e){
+            throw new RuntimeException(e);
+        }
+    }
+
+    public String deleteGroup(String id){
+        try{
+            AppGroup group = groupRepo.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Group not found"));
+            groupRepo.delete(group);
+            return "Group deleted";
         }
         catch (Exception e){
             throw new RuntimeException(e);

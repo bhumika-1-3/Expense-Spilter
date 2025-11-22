@@ -1,8 +1,8 @@
 package com.example.Splitter.Controller;
 
 
-import com.example.Splitter.Entity.AppGroup;
 import com.example.Splitter.Model.CreateGroupRequest;
+import com.example.Splitter.Model.EditUsersInGroup;
 import com.example.Splitter.Model.GroupAndUserResponse;
 import com.example.Splitter.Service.GroupService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,4 +43,23 @@ public class GroupController {
             throw new RuntimeException(e);
         }
     }
+
+    @PutMapping("edit")
+    public String editUsers(@RequestBody EditUsersInGroup data){
+        try{
+            return groupService.editUsers(data.getId(),data.getUsers(),data.getType());
+        } catch (RuntimeException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @DeleteMapping("delete")
+    public String deleteGroup(@RequestBody String groupId){
+        try{
+            return groupService.deleteGroup(groupId);
+        } catch (RuntimeException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }
