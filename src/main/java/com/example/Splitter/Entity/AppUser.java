@@ -12,6 +12,7 @@ public class AppUser {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String userId;
+    @Column(unique = true)
     private String name;
     private String email;
     private String password;
