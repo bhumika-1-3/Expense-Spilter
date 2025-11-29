@@ -5,6 +5,9 @@ import com.example.Splitter.Entity.AppUser;
 import com.example.Splitter.Model.CreateUserRequest;
 import com.example.Splitter.Repo.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,14 +23,17 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    public String createUser(CreateUserRequest info){
+    public ResponseEntity<String> createUser(CreateUserRequest info){
         try{
+            if(userRepo.existsByname(info.getName())){
+                return new ResponseEntity<>("User already exists with this name", HttpStatus.BAD_REQUEST);
+            }
             AppUser appUser = new AppUser();
             appUser.setEmail(info.getEmail());
             appUser.setName(info.getName());
             appUser.setPassword(passwordEncoder.encode(info.getPassword()));
             userRepo.save(appUser);
-            return info.getName();
+            return new ResponseEntity<>("User created", HttpStatus.OK);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

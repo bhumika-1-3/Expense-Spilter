@@ -9,4 +9,5 @@ import java.util.Optional;
 //your entity and idtype
 public interface UserRepo extends JpaRepository<AppUser,String> {
     Optional<AppUser> findByname(String name);
+    boolean existsByname(String name);
 }

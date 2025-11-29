@@ -35,7 +35,7 @@ public class UserController {
     private JwtUtil jwtUtil;
 
     @PostMapping("/signup")
-    public String createUser(@RequestBody CreateUserRequest info){
+    public ResponseEntity<String> createUser(@RequestBody CreateUserRequest info){
         try{
             log.info("user controller post {}",info);
             return userService.createUser(info);
