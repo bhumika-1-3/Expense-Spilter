@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/lib/react-query/queryKeys";
+import axios from "axios"
 import {
   createUserAccount,
   signInAccount,
@@ -30,8 +31,8 @@ import { useUserContext } from "@/context/AuthContext";
 
 export const useCreateUserAccount = () => {
   return useMutation({
-    mutationFn: (user: INewUser) => createUserAccount(user),
-  });
+    mutationFn: (payload) => axios.post("/user/signup", payload),
+});
 };
 
 export const useSignInAccount = () => {

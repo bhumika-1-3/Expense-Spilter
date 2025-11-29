@@ -27,7 +27,7 @@ type IContextType = {
   setUser: React.Dispatch<React.SetStateAction<IUser>>;
   isAuthenticated: boolean;
   setIsAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
-  checkAuthUser: () => Promise<boolean>;
+  // checkAuthUser: () => Promise<boolean>;
 };
 
 const AuthContext = createContext<IContextType>(INITIAL_STATE);
@@ -38,44 +38,44 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const checkAuthUser = async () => {
-    setIsLoading(true);
-    try {
-      const currentAccount = await getCurrentUser();
-      if (currentAccount) {
-        setUser({
-          id: currentAccount.$id,
-          name: currentAccount.name,
-          username: currentAccount.username,
-          email: currentAccount.email,
-          group: currentAccount.UserMember,
-          list: currentAccount.List,
-        });
-        setIsAuthenticated(true);
-        return true;
-      }
+  // const checkAuthUser = async () => {
+  //   setIsLoading(true);
+  //   try {
+  //     const currentAccount = await getCurrentUser();
+  //     if (currentAccount) {
+  //       setUser({
+  //         id: currentAccount.$id,
+  //         name: currentAccount.name,
+  //         username: currentAccount.username,
+  //         email: currentAccount.email,
+  //         group: currentAccount.UserMember,
+  //         list: currentAccount.List,
+  //       });
+  //       setIsAuthenticated(true);
+  //       return true;
+  //     }
 
-      return false;
-    } catch (error) {
-      console.error(error);
-      return false;
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  //     return false;
+  //   } catch (error) {
+  //     console.error(error);
+  //     return false;
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
-  useEffect(() => {
-    const cookieFallback = localStorage.getItem("cookieFallback");
-    if (
-      cookieFallback === "[]" ||
-      cookieFallback === null ||
-      cookieFallback === undefined
-    ) {
-      navigate("/sign-in");
-    }
+  // useEffect(() => {
+  //   const cookieFallback = localStorage.getItem("cookieFallback");
+  //   if (
+  //     cookieFallback === "[]" ||
+  //     cookieFallback === null ||
+  //     cookieFallback === undefined
+  //   ) {
+  //     navigate("/sign-in");
+  //   }
 
-    checkAuthUser();
-  }, []);
+  //   checkAuthUser();
+  // }, []);
 
   const value = {
     user,
@@ -83,7 +83,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     isLoading,
     isAuthenticated,
     setIsAuthenticated,
-    checkAuthUser,
+    // checkAuthUser,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

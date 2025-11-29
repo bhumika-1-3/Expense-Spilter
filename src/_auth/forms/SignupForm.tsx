@@ -2,6 +2,7 @@ import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
+import axios from "axios";
 
 import {
   Form,
@@ -15,38 +16,39 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Loader from "@/components/shared/Loader";
 
-import {
-  useCreateUserAccount,
-  useSignInAccount,
-} from "@/lib/react-query/queries";
 import { SignupValidation } from "@/lib/validation";
-import { useUserContext } from "@/context/AuthContext";
+// import { useUserContext } from "@/context/AuthContext";
 import { toast } from "@/components/ui";
+import { useMutation } from "@tanstack/react-query";
 
 const SignupForm = () => {
   const navigate = useNavigate();
-  const { checkAuthUser, isLoading: isUserLoading } = useUserContext();
+  // const { checkAuthUser, isLoading: isUserLoading } = useUserContext();
 
   const form = useForm<z.infer<typeof SignupValidation>>({
     resolver: zodResolver(SignupValidation),
     defaultValues: {
       name: "",
-      username: "",
       email: "",
       password: "",
     },
   });
 
   // Queries
-  const { mutateAsync: createUserAccount, isLoading: isCreatingAccount } =
-    useCreateUserAccount();
-  const { mutateAsync: signInAccount, isLoading: isSigningInUser } =
-    useSignInAccount();
+  const { mutateAsync, isLoading: isCreatingAccount } = useMutation<
+    any, // result type (response)
+    Error, // error type
+    z.infer<typeof SignupValidation> // payload/variables type  🔥 the important one
+  >({
+    mutationFn: (payload) => axios.post("/user/signup", payload),
+  });
+  // const { mutateAsync: signInAccount, isLoading: isSigningInUser } =
+  //   useSignInAccount();
 
   // Handler
   const handleSignup = async (user: z.infer<typeof SignupValidation>) => {
     try {
-      const newUser = await createUserAccount(user);
+      const newUser = await mutateAsync(user);
 
       console.log(newUser);
 
@@ -55,31 +57,31 @@ const SignupForm = () => {
         return;
       }
 
-      const session = await signInAccount({
-        email: user.email,
-        password: user.password,
-      });
+      // const session = await signInAccount({
+      //   email: user.email,
+      //   password: user.password,
+      // });
+toast({ title: "Something went wrong. Please login your new account" });
+      // if (!session) {
+      //   toast({ title: "Something went wrong. Please login your new account" });
+      //   navigate("/sign-in");
+      //   return;
+      // }
 
-      if (!session) {
-        toast({ title: "Something went wrong. Please login your new account" });
-        navigate("/sign-in");
-        return;
-      }
+      // const isLoggedIn = await checkAuthUser();
 
-      const isLoggedIn = await checkAuthUser();
+      // if (isLoggedIn) {
+      //   toast({
+      //     title: "Sign up Successfully.",
+      //     description: "Auto Login...",
+      //   });
 
-      if (isLoggedIn) {
-        toast({
-          title: "Sign up Successfully.",
-          description: "Auto Login...",
-        });
-
-        form.reset();
-        navigate("/");
-      } else {
-        toast({ title: "Login failed. Please try again." });
-        return;
-      }
+      //   form.reset();
+      //   navigate("/");
+      // } else {
+      //   toast({ title: "Login failed. Please try again." });
+        // return;
+      // }
     } catch (error) {
       console.log("here");
       console.log({ error });
@@ -128,20 +130,6 @@ const SignupForm = () => {
 
           <FormField
             control={form.control}
-            name="username"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="shad-form_label">Username</FormLabel>
-                <FormControl>
-                  <Input type="text" className="shad-input" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
             name="email"
             render={({ field }) => (
               <FormItem>
@@ -172,7 +160,8 @@ const SignupForm = () => {
             type="submit"
             style={{ backgroundColor: "#1CC29F" }}
             className="">
-            {isCreatingAccount || isSigningInUser || isUserLoading ? (
+              {/* something was here */}
+            {isCreatingAccount ? (
               <div className="flex-center gap-2">
                 <Loader /> Loading...
               </div>

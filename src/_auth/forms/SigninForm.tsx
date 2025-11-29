@@ -16,13 +16,22 @@ import { Button } from "@/components/ui/button";
 import Loader from "@/components/shared/Loader";
 
 import { SigninValidation } from "@/lib/validation";
-import { useSignInAccount } from "@/lib/react-query/queries";
-import { useUserContext } from "@/context/AuthContext";
+// import { useUserContext } from "@/context/AuthContext";
 import { toast } from "@/components/ui";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
+
 const SigninForm = () => {
   const navigate = useNavigate();
-  const { checkAuthUser, isLoading: isUserLoading } = useUserContext();
-  const { mutateAsync: signInAccount, isLoading } = useSignInAccount();
+  // const { checkAuthUser, isLoading: isUserLoading } = useUserContext();
+  
+  const { mutateAsync: signInAccount, isLoading } = useMutation<
+    any, // result type (response)
+    Error, // error type
+    z.infer<typeof SigninValidation> // payload/variables type  🔥 the important one
+  >({
+    mutationFn: (payload) => axios.post("/user/signup", payload),
+  });
 
   const form = useForm<z.infer<typeof SigninValidation>>({
     resolver: zodResolver(SigninValidation),
@@ -40,7 +49,7 @@ const SigninForm = () => {
       return;
     }
 
-    const isLoggedIn = await checkAuthUser();
+    // const isLoggedIn = await checkAuthUser();
 
     if (isLoggedIn) {
       toast({ title: "Login Successfully." });
