@@ -5,6 +5,7 @@ import com.example.Splitter.Entity.AppUser;
 import com.example.Splitter.Model.CreateUserRequest;
 import com.example.Splitter.Repo.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,11 +17,15 @@ public class UserService {
     @Autowired
     private UserRepo userRepo;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     public String createUser(CreateUserRequest info){
         try{
             AppUser appUser = new AppUser();
             appUser.setEmail(info.getEmail());
             appUser.setName(info.getName());
+            appUser.setPassword(passwordEncoder.encode(info.getPassword()));
             userRepo.save(appUser);
             return info.getName();
         } catch (Exception e) {

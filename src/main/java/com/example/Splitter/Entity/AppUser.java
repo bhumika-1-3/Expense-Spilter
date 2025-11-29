@@ -14,6 +14,7 @@ public class AppUser {
     private String userId;
     private String name;
     private String email;
+    private String password;
     @ManyToMany(mappedBy = "users")
     @JsonIgnore
     private List<AppGroup> groups;

@@ -4,19 +4,21 @@
 CREATE TABLE app_user (
     user_id VARCHAR(255) PRIMARY KEY,
     name VARCHAR(255),
-    email VARCHAR(255)
+    email VARCHAR(255),
+    password VARCHAR(255)
 );
 
 -- ==========================
 -- Insert sample users
 -- ==========================
-INSERT INTO app_user (user_id, name, email)
-VALUES 
-('1111-2222-3333', 'Bhumika', 'bhumika@gmail.com'),
-('4444-5555-6666', 'Om', 'om@gmail.com'),
-('7777-8888-9999', 're', 're@gmail.com'),
-('aaaa-bbbb-cccc', 'Sneha', 'sneha@gmail.com'),
-('dddd-eeee-ffff', 'Amit', 'amit@gmail.com');
+INSERT INTO app_user (user_id, name, email, password)
+VALUES
+('1111-2222-3333', 'Bhumika', 'bhumika@gmail.com', '$2a$12$q5t/SFItGmE2jVX7ITT.vuOMz/Iuo5VSbw77n7.uNSGl3XasoQiki'),
+('4444-5555-6666', 'Om', 'om@gmail.com', '$2a$12$q5t/SFItGmE2jVX7ITT.vuOMz/Iuo5VSbw77n7.uNSGl3XasoQiki'),
+('7777-8888-9999', 'Re', 're@gmail.com', '$2a$12$q5t/SFItGmE2jVX7ITT.vuOMz/Iuo5VSbw77n7.uNSGl3XasoQiki'),
+('aaaa-bbbb-cccc', 'Sneha', 'sneha@gmail.com', '$2a$12$q5t/SFItGmE2jVX7ITT.vuOMz/Iuo5VSbw77n7.uNSGl3XasoQiki'),
+('dddd-eeee-ffff', 'Amit', 'amit@gmail.com', '$2a$12$q5t/SFItGmE2jVX7ITT.vuOMz/Iuo5VSbw77n7.uNSGl3XasoQiki');
+
 
 
 -- ==========================
