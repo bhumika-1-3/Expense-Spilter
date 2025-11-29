@@ -31,7 +31,6 @@ public class GroupService {
             List<String> usersInGroup = info.getUsers();
             List<AppUser> users = new ArrayList<>();
             for(String id : usersInGroup){
-//                todo : create new user
                 AppUser user = userRepo.findById(id)
                         .orElseThrow(() -> new RuntimeException("User not found"));
 

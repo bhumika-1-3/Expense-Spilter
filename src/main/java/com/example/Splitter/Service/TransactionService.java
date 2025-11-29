@@ -13,6 +13,8 @@ import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -36,8 +38,15 @@ public class TransactionService {
         try{
             AppGroup group = groupRepo.findById(req.getGroupId())
                     .orElseThrow(() -> new RuntimeException("Group not found"));
-            AppUser sender = userRepo.findById(req.getSenderId())
-                    .orElseThrow(() -> new RuntimeException("Sender not found"));
+
+            AppUser sender;
+            if(req.getSenderId() == null || req.getSenderId().isEmpty()){
+                sender = findSenderInSession();
+            }
+            else{
+                sender = userRepo.findById(req.getSenderId())
+                        .orElseThrow(() -> new RuntimeException("Sender not found"));
+            }
 
 //                check if all users exist in group
             List<AppUser> receivers = new ArrayList<>();
@@ -126,6 +135,12 @@ public class TransactionService {
 
         allTransactionInGroup.setReceiverNames(receiverNames);
         return allTransactionInGroup;
+    }
+
+    private AppUser findSenderInSession(){
+        String authUser = SecurityContextHolder.getContext().getAuthentication().getName();
+        return userRepo.findByname(authUser)
+                .orElseThrow(() -> new RuntimeException("Sender not found"));
     }
 
 }
