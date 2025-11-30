@@ -20,12 +20,25 @@ public class RefreshTokenService {
     private RefreshRepo refreshRepo;
 
     public String createRefreshToken(AppUser user) {
-        RefreshToken refreshToken = new RefreshToken();
-        refreshToken.setUser(user);
-        refreshToken.setExpiryDate(new Date(System.currentTimeMillis() + refreshTokenDurationMs));
-        refreshToken.setToken(UUID.randomUUID().toString());
-        refreshRepo.save(refreshToken);
-        return refreshToken.getToken();
+
+        // Find existing refresh token or create a new one
+        RefreshToken token = refreshRepo
+                .findByUserUserId(user.getUserId())
+                .orElse(new RefreshToken());
+
+        // Associate token with the user if it's new
+        token.setUser(user);
+
+        // Generate new token string
+        token.setToken(UUID.randomUUID().toString());
+
+        // Set expiry date
+        token.setExpiryDate(new Date(System.currentTimeMillis() + refreshTokenDurationMs));
+
+        // Save token
+        refreshRepo.save(token);
+
+        return token.getToken();
     }
 
     public boolean isValid(RefreshToken token) {
