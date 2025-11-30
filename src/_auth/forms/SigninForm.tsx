@@ -30,20 +30,20 @@ const SigninForm = () => {
     Error, // error type
     z.infer<typeof SigninValidation> // payload/variables type  🔥 the important one
   >({
-    mutationFn: (payload) => axios.post("/user/signup", payload),
+    mutationFn: (payload) => axios.post("/user/login", payload),
   });
 
   const form = useForm<z.infer<typeof SigninValidation>>({
     resolver: zodResolver(SigninValidation),
     defaultValues: {
-      email: "",
+      name: "",
       password: "",
     },
   });
 
   const handleSignin = async (user: z.infer<typeof SigninValidation>) => {
     const session = await signInAccount(user);
-
+    console.log(session.data);
     if (!session) {
       toast({ title: "Login failed. Please try again." });
       return;
@@ -51,21 +51,15 @@ const SigninForm = () => {
 
     // const isLoggedIn = await checkAuthUser();
 
-    if (isLoggedIn) {
+    if (session.status === 200) {
       toast({ title: "Login Successfully." });
+      localStorage.setItem("access", session.data.accessToken);
+      localStorage.setItem("refresh", session.data.refreshToken);
       form.reset();
       navigate("/");
     } else {
       toast({ title: "Login failed. Please try again." });
     }
-  };
-
-  const handleDemoLogin = () => {
-    const demoCredentials = {
-      email: "pawan@gmail.com",
-      password: "pawan123",
-    };
-    handleSignin(demoCredentials);
   };
 
   return (
@@ -97,10 +91,10 @@ const SigninForm = () => {
           className="flex flex-col gap-5 w-full mt-4">
           <FormField
             control={form.control}
-            name="email"
+            name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="shad-form_label">Email</FormLabel>
+                <FormLabel className="shad-form_label">Name</FormLabel>
                 <FormControl>
                   <Input type="text" className="shad-input" {...field} />
                 </FormControl>
@@ -127,20 +121,13 @@ const SigninForm = () => {
             type="submit"
             style={{ backgroundColor: "#1CC29F" }}
             className="">
-            {isLoading || isUserLoading ? (
+            {isLoading? (
               <div className="flex-center gap-2">
                 <Loader /> Loading...
               </div>
             ) : (
               "Log in"
             )}
-          </Button>
-
-          <Button
-            type="button"
-            style={{ backgroundColor: "#1C7FC2" }}
-            onClick={handleDemoLogin}>
-            Demo Login
           </Button>
 
           <p className="text-small-regular text-light-2 text-center mt-2">

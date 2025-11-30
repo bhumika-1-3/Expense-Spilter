@@ -12,10 +12,10 @@ export const SignupValidation = z.object({
 });
 
 export const SigninValidation = z.object({
-  email: z.string().email(),
+  name: z.string().min(2, { message: "Name must be at least 2 characters." }),
   password: z
     .string()
-    .min(8, { message: "Password must be at least 8 characters." }),
+    .min(5, { message: "Password must be at least 5 characters." }),
 });
 
 export const ProfileValidation = z.object({
